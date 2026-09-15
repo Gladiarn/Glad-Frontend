@@ -4,7 +4,7 @@
     {
       "id": 1,
       "prompt": "I'm building a Next.js admin dashboard. Build a page with a table showing customer orders (order id, customer name, total, status). We don't have the backend API yet, but I want it ready to plug in later without rewriting the page.",
-      "expected_output": "A table component driven by a hook/store backed by a repository interface, with a mock implementation only, realistic-looking varied mock order data (not 'Item 1'/'Item 2'), loading/error/empty states handled, no hardcoded rows in JSX, and a distinctive (non-generic-SaaS-table) visual treatment.",
+      "expected_output": "A table component driven by a hook/store backed by a repository interface, with a mock implementation only, realistic-looking varied mock order data (not 'Item 1'/'Item 2'), loading/error/empty states handled, no hardcoded rows in JSX. Visual treatment is out of scope for this skill.",
       "files": [],
       "expectations": [
         "No order data (ids, names, totals, statuses) is hardcoded as literals directly inside a component/JSX file",
@@ -18,7 +18,7 @@
     {
       "id": 2,
       "prompt": "Add a product grid to the storefront homepage — image, name, price, add-to-cart button, maybe 12-20 products. Backend isn't ready, just use placeholder data for now but make it swappable later.",
-      "expected_output": "Product data comes from a repository-backed hook, not an inline array in the component. Mock data has varied/realistic product names and prices, not 'Product 1'. Grid handles empty/loading/error states. Visual design avoids generic SaaS-card/e-commerce-template defaults (uniform rounded cards, identical shadow, etc).",
+      "expected_output": "Product data comes from a repository-backed hook, not an inline array in the component. Mock data has varied/realistic product names and prices, not 'Product 1'. Grid handles empty/loading/error states. Visual design is out of scope for this skill.",
       "files": [],
       "expectations": [
         "No product data (name, price) is hardcoded as literals directly inside a component/JSX file",
@@ -30,15 +30,14 @@
     },
     {
       "id": 3,
-      "prompt": "Build a settings page with a list of team members (name, email, role) that I can remove people from. Make the UI look distinctive, not just another generic SaaS table.",
-      "expected_output": "Team member list backed by repository/mock pattern with remove functionality wired through the same data layer (not just local array splicing disconnected from the data source). Design is deliberately distinctive per frontend-design principles, not a default SaaS list. Accessibility basics present (labels, focus states) per web-design-guidelines.",
+      "prompt": "Build a settings page with a list of team members (name, email, role) that I can remove people from.",
+      "expected_output": "Team member list backed by repository/mock pattern with remove functionality wired through the same data layer (not just local array splicing disconnected from the data source). Visual treatment is out of scope for this skill.",
       "files": [],
       "expectations": [
         "No team member data is hardcoded directly in JSX",
         "A repository/mock abstraction is defined for team members",
         "Remove functionality routes through the repository/data layer, not just a local array splice disconnected from the mock source",
-        "Loading and error states are implemented",
-        "The design makes at least one deliberate, non-default visual choice rather than a plain default table (evaluated qualitatively)"
+        "Loading and error states are implemented"
       ]
     }
   ]

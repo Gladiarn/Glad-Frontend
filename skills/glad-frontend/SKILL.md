@@ -1,16 +1,15 @@
 ---
 name: glad-frontend
-description: Build distinctive, non-templated frontend UI that is fully backend-ready from day one — no hardcoded display data anywhere, everything flows through state backed by a swappable mock/real data layer. Interviews the user first on visual style (minimalism, neumorphism, glassmorphism, brutalism, flat/material, maximalism, retro, etc.) and hero approach — image-led (with real photos processed into backgroundless, high-quality assets) or typographic (no photo) — rather than defaulting either. If given a reference image, matches its actual colors, spacing, and element positions closely rather than loosely improvising. Use whenever the user asks to build a new page, component, table, list, dashboard, form, or landing page before a backend/API exists, wants the frontend "ready to plug in the backend later," asks for a design that doesn't look generic/templated/AI-generated, mentions a design style/aesthetic by name, provides a reference image/screenshot to match, needs a hero or homepage with or without a background image, or is scaffolding UI ahead of API availability.
+description: Make frontend UI backend-ready by construction — no hardcoded display data anywhere, everything flows through state backed by a swappable mock/real data layer via a repository pattern, with loading/error/empty states genuinely exercised. This skill owns data architecture only, never visual design — pair it with frontend-design/impeccable/web-design-guidelines (or whatever design skill is active) for how the UI should look. Use whenever the user asks to build a new page, component, table, list, dashboard, or form before a backend/API exists, wants the frontend "ready to plug in the backend later," or is scaffolding UI ahead of API availability.
 ---
 
-# Frontend Ready
+# Glad Frontend — Backend-Ready Architecture
 
-Two requirements govern every frontend build under this skill, and neither is optional:
+One requirement governs every frontend build under this skill: **the frontend must be backend-ready by construction** — swapping mock data for a real API later touches one file, never the UI.
 
-1. **The design must be distinctive**, not a templated default.
-2. **The frontend must be backend-ready by construction** — swapping mock data for a real API later touches one file, never the UI.
+This skill is deliberately scoped to data architecture only. It has no opinion on visual style, layout, typography, or whether a hero uses a photo — that's the job of whatever design skill is active (`frontend-design`, `impeccable`, `web-design-guidelines`, or a future replacement). Keeping the boundary sharp means this skill stays useful regardless of which design skill you're pairing it with this month.
 
-Most frontend work satisfies neither by default: it hardcodes strings/arrays straight into JSX, and it converges on the same handful of AI-generated-looking layouts. This skill exists to prevent both failure modes at once, because they compound — a component wired to hardcoded data has to be *rebuilt*, not *reconnected*, when the backend shows up, and that rebuild is exactly when corners get cut and the design regresses to generic.
+Most frontend work hardcodes strings/arrays straight into JSX by default. That's the specific failure mode this skill prevents: a component wired to hardcoded data has to be *rebuilt*, not *reconnected*, when the backend shows up — and design corners get cut during that rebuild far more often than during the first build.
 
 ## Why mock-first, not hardcoded
 
@@ -98,7 +97,7 @@ A mock that resolves instantly and never fails teaches the UI to assume APIs alw
 
 - **Add latency** (150–600ms, randomized) so loading states actually get exercised and designed, not bolted on later.
 - **Occasionally fail** (configurable rate, default off but easy to flip on) so error states are real UI, not an afterthought.
-- **Return realistic volume and content** — not `"Item 1"`, `"Item 2"`. Use plausible names, varied string lengths, edge cases (empty state, one item, 200 items) so layout decisions are grounded in what real content actually looks like. Lorem-ipsum-driven layouts are a top source of the generic look this skill also exists to avoid — see below.
+- **Return realistic volume and content** — not `"Item 1"`, `"Item 2"`. Use plausible names, varied string lengths, edge cases (empty state, one item, 200 items) so layout decisions are grounded in what real content actually looks like. Lorem-ipsum-driven layouts hide real layout problems — good mock data is this skill's contribution to whatever design skill is doing the actual visual work.
 
 Every data-bound component must handle three states because of this: loading, error, and empty (zero results is not the same bug as "still loading"). If a component only handles the success case, it is not done.
 
@@ -110,61 +109,11 @@ Every data-bound component must handle three states because of this: loading, er
 - [ ] The mock repository implements the *same interface* the real one will — check this by asking "if I swapped the binding right now, would any component need to change?" The answer must be no.
 - [ ] Config/copy that is genuinely static (labels, nav items, legal text) is fine to hardcode — this rule is about data that originates from a backend, not literally everything
 
-## Design interview
+## Design is out of scope, on purpose
 
-Before building, ask — don't assume, and don't silently default to whatever's easiest. When there's more than one open question, use `grilling`'s frontier/rounds approach: ask them together in one round with recommended answers, since visual style, hero approach, and reference material don't usually depend on each other's answers.
+This skill never decides visual style, hero treatment, color, typography, or layout, and never asks design-interview questions — that's entirely the active design skill's job (`frontend-design`, `impeccable`, `web-design-guidelines`, or whatever is installed at the time). The only place this skill touches "design" at all is indirectly: realistic mock content (not lorem ipsum) gives the design skill real material to work against, since actual data surfaces layout problems — text overflow, varying lengths, empty states — that placeholder text hides.
 
-**Visual style/paradigm** — ask directly, with a recommended answer grounded in the brief's actual subject matter (per `frontend-design`'s "ground your designs in the subject matter"), never a reflexive default:
-
-- **Minimalism** — restraint, negative space, few elements doing more
-- **Neumorphism (soft UI)** — soft extruded shadows, monochrome surfaces; flag its real accessibility/contrast tradeoffs if recommending it
-- **Glassmorphism** — frosted-glass translucency, blur, layered depth
-- **Brutalism / neo-brutalism** — raw, high-contrast, deliberately unpolished, thick borders
-- **Flat / Material** — clean geometric shapes, purposeful elevation, motion-driven feedback
-- **Maximalism** — dense, expressive, layered pattern and color
-- **Retro/organic** — hand-drawn, textured, warm, imperfect
-- **No strong preference** — still requires a deliberate, brief-grounded choice, not a default pick
-
-This list is vocabulary for the conversation, not a menu to tick mechanically — the right answer fits the actual subject matter, same as `frontend-design`'s color/type/layout guidance.
-
-**Reference image — if the user gives one, match it closely, not loosely.** This is distinct from the hero/product photo handled under "Visual approach" below — this is an existing design, screenshot, or mockup whose visual system should be reproduced, not just drawn from for inspiration:
-
-- **Colors**: sample the actual colors used, don't approximate from memory. Read hex/rgb values directly from the image where possible ("a warm coral around #E8654A," not "an orange-ish color").
-- **Spacing**: match the reference's real rhythm — gaps, padding, density — instead of defaulting to a generic comfortable spacing system if the reference is tighter or looser than that.
-- **Element positions and structure**: reproduce where things actually sit — nav placement, content grouping, alignment, hierarchy — rather than reinterpreting into a "similar in spirit" arrangement.
-- **Extending beyond what the reference shows**: for anything the reference doesn't cover, continue its established system (same colors, spacing, structural language) rather than reverting to a generic default or drifting into a different style.
-
-Fidelity to a real reference the user chose is not the same failure mode as fidelity to a generic default — when a reference exists, matching it precisely *is* the distinctive choice.
-
-## Visual approach: image-led or typographic
-
-Before designing any hero or landing section, ask directly — don't guess: **"Should this use a photo/image as the hero's visual anchor, or a typography/color/shape-driven treatment with no photographic image?"** Both are legitimate professional approaches, not a quality tier:
-
-- **Typographic/no-image**: the hero is carried by type, color, structural devices (dividers, numbering, labels), or abstract shape/gradient work — a serif wordmark on a considered background, a testimonial as the hero, glowing abstract forms. No photo is missing here; none was needed.
-- **Image-led**: a product, person, or object photo is the hero's visual anchor — full-bleed, cut out, or composited into the layout, the way a product bottle or a lifestyle photo anchors an e-commerce or brand landing page.
-
-This is exactly the kind of axis `frontend-design` says not to spend on a default — the brief or the user decides it, not a coin flip. If neither says, ask before building.
-
-**If typographic/no-image:** follow `frontend-design`'s typography and layout guidance directly — type, color, and structural devices carry the whole hero. No filler stock photo "because the hero needs something."
-
-**If image-led:**
-1. **Ask what image is needed** — specifically: the subject (product/person/object), its role (hero background, section accent, card thumbnail), and whether the user has a source image or one needs to be sourced. Don't substitute a generic stock photo for an unanswered question — a generic stock photo is itself a slop tell, not a safe default.
-2. **Get the actual source image** from the user (a file path). Treat this like any other required input — don't fabricate or placeholder it.
-3. **Process it before it goes in the design**, in this order:
-   - **Background removal** — isolate the subject onto a transparent background so it composites into the page's real background/color instead of sitting in its own rectangle: `scripts/remove_background.py <input> <output>` (uses `rembg`; the script prints install instructions and exits rather than faking a result if the package isn't present).
-   - **Upscale/quality pass** — if the source is low-resolution or compressed: `scripts/upscale_image.py <input> <output> --scale 2` (uses Real-ESRGAN if installed, otherwise a Pillow Lanczos resize — the script says explicitly which one ran, since it's a real quality difference).
-4. **Use the processed image** — backgroundless and upscaled, not the raw upload — composited directly against the layout's real background/color, the way a product photo sits directly in a scene rather than boxed in a card.
-
-**Either path, the anti-slop rule still applies.** Choosing image-led is not permission to default to the generic e-commerce-hero pattern (centered product bottle, green gradient, "Shop Now"). Consult `frontend-design`'s tells list regardless of which visual approach was chosen — the image/no-image decision is about visual approach, not an excuse to skip the distinctiveness work.
-
-## Distinctive, non-generic design
-
-Backend-readiness governs data flow; it says nothing about whether the result looks distinctive or like every other AI-generated page. For that:
-
-- **Before designing**, consult the `frontend-design` skill for the specific tells of generic AI-generated output (default color/type combinations, the SaaS-card kit, eyebrow labels, arrow-suffixed buttons) and its two-pass plan-then-build process. Ground the visual direction in this project's actual subject matter, not a safe default.
-- **If `impeccable` is available and the task warrants its deeper workflow** (a full page or surface, not a small tweak), consult it for the structured critique/polish/audit commands.
-- **Before finishing**, consult `web-design-guidelines` and apply its accessibility, focus-state, and form rules — a distinctive design that fails basic accessibility is not done either.
-- Design against the realistic mock content from the data layer above, not lorem ipsum — real-feeling data surfaces real layout problems (text overflow, varying lengths, empty states) that placeholder text hides.
+If a design skill and this skill are both active on the same build, they should compose cleanly: the design skill decides what things look like, this skill decides where their data comes from. Neither should need to know the other's internals.
 
 ## Anti-patterns
 
