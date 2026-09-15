@@ -1,6 +1,6 @@
 ---
-name: frontend-ready
-description: Build distinctive, non-templated frontend UI that is fully backend-ready from day one — no hardcoded display data anywhere, everything flows through state backed by a swappable mock/real data layer. Use whenever the user asks to build a new page, component, table, list, dashboard, or form before a backend/API exists, wants the frontend to be "ready to plug in the backend later," asks for a design that doesn't look generic/templated/AI-generated, or is scaffolding UI ahead of API availability.
+name: glad-frontend
+description: Build distinctive, non-templated frontend UI that is fully backend-ready from day one — no hardcoded display data anywhere, everything flows through state backed by a swappable mock/real data layer. Interviews the user first on visual style (minimalism, neumorphism, glassmorphism, brutalism, flat/material, maximalism, retro, etc.) and hero approach — image-led (with real photos processed into backgroundless, high-quality assets) or typographic (no photo) — rather than defaulting either. If given a reference image, matches its actual colors, spacing, and element positions closely rather than loosely improvising. Use whenever the user asks to build a new page, component, table, list, dashboard, form, or landing page before a backend/API exists, wants the frontend "ready to plug in the backend later," asks for a design that doesn't look generic/templated/AI-generated, mentions a design style/aesthetic by name, provides a reference image/screenshot to match, needs a hero or homepage with or without a background image, or is scaffolding UI ahead of API availability.
 ---
 
 # Frontend Ready
@@ -109,6 +109,53 @@ Every data-bound component must handle three states because of this: loading, er
 - [ ] Loading, error, and empty states are implemented and visually designed, not just `if (loading) return null`
 - [ ] The mock repository implements the *same interface* the real one will — check this by asking "if I swapped the binding right now, would any component need to change?" The answer must be no.
 - [ ] Config/copy that is genuinely static (labels, nav items, legal text) is fine to hardcode — this rule is about data that originates from a backend, not literally everything
+
+## Design interview
+
+Before building, ask — don't assume, and don't silently default to whatever's easiest. When there's more than one open question, use `grilling`'s frontier/rounds approach: ask them together in one round with recommended answers, since visual style, hero approach, and reference material don't usually depend on each other's answers.
+
+**Visual style/paradigm** — ask directly, with a recommended answer grounded in the brief's actual subject matter (per `frontend-design`'s "ground your designs in the subject matter"), never a reflexive default:
+
+- **Minimalism** — restraint, negative space, few elements doing more
+- **Neumorphism (soft UI)** — soft extruded shadows, monochrome surfaces; flag its real accessibility/contrast tradeoffs if recommending it
+- **Glassmorphism** — frosted-glass translucency, blur, layered depth
+- **Brutalism / neo-brutalism** — raw, high-contrast, deliberately unpolished, thick borders
+- **Flat / Material** — clean geometric shapes, purposeful elevation, motion-driven feedback
+- **Maximalism** — dense, expressive, layered pattern and color
+- **Retro/organic** — hand-drawn, textured, warm, imperfect
+- **No strong preference** — still requires a deliberate, brief-grounded choice, not a default pick
+
+This list is vocabulary for the conversation, not a menu to tick mechanically — the right answer fits the actual subject matter, same as `frontend-design`'s color/type/layout guidance.
+
+**Reference image — if the user gives one, match it closely, not loosely.** This is distinct from the hero/product photo handled under "Visual approach" below — this is an existing design, screenshot, or mockup whose visual system should be reproduced, not just drawn from for inspiration:
+
+- **Colors**: sample the actual colors used, don't approximate from memory. Read hex/rgb values directly from the image where possible ("a warm coral around #E8654A," not "an orange-ish color").
+- **Spacing**: match the reference's real rhythm — gaps, padding, density — instead of defaulting to a generic comfortable spacing system if the reference is tighter or looser than that.
+- **Element positions and structure**: reproduce where things actually sit — nav placement, content grouping, alignment, hierarchy — rather than reinterpreting into a "similar in spirit" arrangement.
+- **Extending beyond what the reference shows**: for anything the reference doesn't cover, continue its established system (same colors, spacing, structural language) rather than reverting to a generic default or drifting into a different style.
+
+Fidelity to a real reference the user chose is not the same failure mode as fidelity to a generic default — when a reference exists, matching it precisely *is* the distinctive choice.
+
+## Visual approach: image-led or typographic
+
+Before designing any hero or landing section, ask directly — don't guess: **"Should this use a photo/image as the hero's visual anchor, or a typography/color/shape-driven treatment with no photographic image?"** Both are legitimate professional approaches, not a quality tier:
+
+- **Typographic/no-image**: the hero is carried by type, color, structural devices (dividers, numbering, labels), or abstract shape/gradient work — a serif wordmark on a considered background, a testimonial as the hero, glowing abstract forms. No photo is missing here; none was needed.
+- **Image-led**: a product, person, or object photo is the hero's visual anchor — full-bleed, cut out, or composited into the layout, the way a product bottle or a lifestyle photo anchors an e-commerce or brand landing page.
+
+This is exactly the kind of axis `frontend-design` says not to spend on a default — the brief or the user decides it, not a coin flip. If neither says, ask before building.
+
+**If typographic/no-image:** follow `frontend-design`'s typography and layout guidance directly — type, color, and structural devices carry the whole hero. No filler stock photo "because the hero needs something."
+
+**If image-led:**
+1. **Ask what image is needed** — specifically: the subject (product/person/object), its role (hero background, section accent, card thumbnail), and whether the user has a source image or one needs to be sourced. Don't substitute a generic stock photo for an unanswered question — a generic stock photo is itself a slop tell, not a safe default.
+2. **Get the actual source image** from the user (a file path). Treat this like any other required input — don't fabricate or placeholder it.
+3. **Process it before it goes in the design**, in this order:
+   - **Background removal** — isolate the subject onto a transparent background so it composites into the page's real background/color instead of sitting in its own rectangle: `scripts/remove_background.py <input> <output>` (uses `rembg`; the script prints install instructions and exits rather than faking a result if the package isn't present).
+   - **Upscale/quality pass** — if the source is low-resolution or compressed: `scripts/upscale_image.py <input> <output> --scale 2` (uses Real-ESRGAN if installed, otherwise a Pillow Lanczos resize — the script says explicitly which one ran, since it's a real quality difference).
+4. **Use the processed image** — backgroundless and upscaled, not the raw upload — composited directly against the layout's real background/color, the way a product photo sits directly in a scene rather than boxed in a card.
+
+**Either path, the anti-slop rule still applies.** Choosing image-led is not permission to default to the generic e-commerce-hero pattern (centered product bottle, green gradient, "Shop Now"). Consult `frontend-design`'s tells list regardless of which visual approach was chosen — the image/no-image decision is about visual approach, not an excuse to skip the distinctiveness work.
 
 ## Distinctive, non-generic design
 
